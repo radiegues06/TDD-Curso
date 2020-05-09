@@ -11,6 +11,7 @@ import static org.junit.Assert.fail;
 
 public class testArmazenamento {
 
+    String CURR_DIR = System.getProperty("user.dir");
     Armazenamento armazenamento;
 
     @Before
@@ -24,4 +25,17 @@ public class testArmazenamento {
         fail();
     }
 
+    @Test(expected = SAXException.class)
+    public void whenArquivoComFormatoIncorretoThenSAXEception() throws IOException, SAXException, ParserConfigurationException {
+        armazenamento.load(CURR_DIR + "\\resources\\formatoIncorreto.xml");
+    }
+
+    @Test
+    public void whenArquivoValidoThenSemErros() {
+        try {
+            armazenamento.load(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
+        } catch (Exception e) {
+            fail();
+        }
+    }
 }
