@@ -35,7 +35,7 @@ public class Armazenamento {
 
             NodeList nodes = (NodeList) searchXPath.evaluate(document, XPathConstants.NODESET);
 
-            setPontosInNode(pontosDoUsuario, nodes);
+            setPontosForUsuario(pontosDoUsuario, nodes);
 
         } catch (XPathExpressionException e) {
             e.printStackTrace();
@@ -43,7 +43,7 @@ public class Armazenamento {
         return pontosDoUsuario;
     }
 
-    private void setPontosInNode(HashMap<String, String> pontos, NodeList nodes) {
+    private void setPontosForUsuario(HashMap<String, String> pontos, NodeList nodes) {
         for (int i = 0; i < nodes.getLength(); i++) {
             Element element = (Element) nodes.item(i);
             pontos.put(getTagContent(element, "Tipo"),
@@ -53,5 +53,29 @@ public class Armazenamento {
 
     private String getTagContent(Element element, String tagName) {
         return element.getElementsByTagName(tagName).item(0).getTextContent();
+    }
+
+    public HashMap<String, String> filterByPointType(String pointType) {
+        HashMap<String,String> usuarios = new HashMap<String,String>();
+        try {
+            XPathExpression searchXPath = xpath.compile("/Usuarios/Usuario/Pontos[contains(Tipo,'" + pointType + "')]");
+
+            NodeList nodes = (NodeList) searchXPath.evaluate(document, XPathConstants.NODESET);
+
+            setUsuariosForPointType(usuarios, nodes);
+
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        }
+        return usuarios;
+    }
+
+    private void setUsuariosForPointType(HashMap<String, String> usuarios, NodeList nodes) {
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Element element = (Element) nodes.item(i);
+            Element nameElement = (Element) element.getParentNode().getParentNode();
+            usuarios.put(getTagContent(nameElement, "Nome"),
+                    getTagContent(element, "Valor"));
+        }
     }
 }

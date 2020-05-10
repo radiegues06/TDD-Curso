@@ -35,7 +35,7 @@ public class testArmazenamento {
     public void whenArquivoValidoThenSemErros() {
         try {
             armazenamento.load(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
-        } catch (Exception e) {
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             fail();
         }
     }
@@ -47,7 +47,7 @@ public class testArmazenamento {
             HashMap<String,String> pontos = armazenamento.filterByUser("invalido");
             assertEquals(null, pontos.get("Moedas"));
             assertEquals(null, pontos.get("Curtidas"));
-        } catch (Exception e) {
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             fail();
         }
     }
@@ -59,7 +59,7 @@ public class testArmazenamento {
             HashMap<String,String> pontos = armazenamento.filterByUser("Rafael");
             assertEquals("15", pontos.get("Moedas"));
             assertEquals("110", pontos.get("Curtidas"));
-        } catch (Exception e) {
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             fail();
         }
     }
@@ -77,7 +77,18 @@ public class testArmazenamento {
             assertEquals("32", pontos2.get("Comentários"));
             assertEquals("101", pontos2.get("Estrelas"));
 
-        } catch (Exception e) {
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void whenFiltraPorTipoDePontoThenRerornaUsuariosEPontos() {
+        try {
+            armazenamento.load(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
+            HashMap<String,String> usuarios = armazenamento.filterByPointType("Moedas");
+            assertEquals("15", usuarios.get("Rafael"));
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             fail();
         }
     }
