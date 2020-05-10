@@ -11,4 +11,19 @@
 			<Valor>110</Valor>
 		</Pontos>
 	</Usuario>
+	<Usuario>
+		<Nome>Isabela</Nome>
+		<Pontos>
+			<Tipo>Fichas</Tipo>
+			<Valor>3000</Valor>
+		</Pontos>
+		<Pontos>
+			<Tipo>Comentários</Tipo>
+			<Valor>32</Valor>
+		</Pontos>
+		<Pontos>
+			<Tipo>Estrelas</Tipo>
+			<Valor>101</Valor>
+		</Pontos>
+	</Usuario>
 </Usuarios>
