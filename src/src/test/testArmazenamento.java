@@ -152,9 +152,11 @@ public class testArmazenamento {
     @Test
     public void whenNaoCarregaXMLESetaValorParaUnicoUsuarioThenCriaXMLERetornaValorArmazenado() {
         armazenamento.setUserPoints("Rafael","Estrela","10");
+
         assertEquals("10", armazenamento.filterByUserAndPointType("Rafael", "Estrela"));
         assertEquals("10", armazenamento.filterByUser("Rafael").get("Estrela"));
         assertEquals("10", armazenamento.filterByPointType("Estrela").get("Rafael"));
+
         deleteFile(armazenamento.getFilePath());
     }
 
@@ -162,8 +164,10 @@ public class testArmazenamento {
     public void whenNaoCarregaXMLESetaValorParaNovoUsuarioThenEscrevePontosNoXML() {
         armazenamento.setUserPoints("Rafael", "Estrela", "20");
         armazenamento.setUserPoints("Júlia", "Fichas", "5000");
+
         assertEquals("20", armazenamento.filterByUserAndPointType("Rafael", "Estrela"));
         assertEquals("5000", armazenamento.filterByUserAndPointType("Júlia", "Fichas"));
+
         deleteFile(armazenamento.getFilePath());
     }
 
@@ -171,13 +175,33 @@ public class testArmazenamento {
     public void whenNaoCarregaXMLESetaValorParaUsuarioJaExistenteThenEscrevePontosNoXMLNaMesmaTagDeXML() {
         armazenamento.setUserPoints("Júlia", "Fichas", "5000");
         armazenamento.setUserPoints("Júlia", "Moedas", "150");
+        armazenamento.setUserPoints("Rafael", "Estrelas", "11");
         armazenamento.setUserPoints("Júlia", "Curtidas", "30");
         armazenamento.setUserPoints("Júlia", "Estrelas", "10");
+        armazenamento.setUserPoints("Rafael", "Moedas", "15");
 
         assertEquals("5000", armazenamento.filterByUser("Júlia").get("Fichas"));
         assertEquals("150", armazenamento.filterByUser("Júlia").get("Moedas"));
+        assertEquals("11", armazenamento.filterByUser("Rafael").get("Estrelas"));
+        assertEquals("15", armazenamento.filterByUser("Rafael").get("Moedas"));
 
         assertEquals(1, getWordCount(armazenamento.getFilePath(), "Júlia"));
-//        deleteFile(armazenamento.getFilePath());
+        assertEquals(1, getWordCount(armazenamento.getFilePath(), "Rafael"));
+
+        deleteFile(armazenamento.getFilePath());
+    }
+
+    @Test
+    public void whenNaoCarregaXMLEAtualizaValorParaPontosJaExistenteThenAtualizaValorDosPontos() {
+        armazenamento.setUserPoints("Rafael","Fichas", "30");
+        armazenamento.setUserPoints("Rafael","Fichas", "20");
+        armazenamento.setUserPoints("Rafael","Fichas", "10");
+
+        assertEquals("10", armazenamento.filterByUser("Rafael").get("Fichas"));
+
+        assertEquals(1, getWordCount(armazenamento.getFilePath(), "Rafael"));
+        assertEquals(1, getWordCount(armazenamento.getFilePath(), "Fichas"));
+
+        deleteFile(armazenamento.getFilePath());
     }
 }

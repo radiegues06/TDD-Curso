@@ -104,27 +104,27 @@ public class Armazenamento {
 
     public void setUserPoints(String userName, String pointType, String pointValue) {
         try {
-            Element root;
-            Element usuario;
 
-            if (isXMLFileInicialized()) {
-                root = getRootElement();
+            Element root = getRootElement();
+            Element usuario = getUsuarioElement(userName);
+
+            if (filterByUserAndPointType(userName, pointType).length() > 0) {
+                setPointsNode(usuario, pointValue);
             } else {
-                setNewDocument();
-                root = createRootElement();
+                Element points = createPointsNode(pointType, pointValue);
+                usuario.appendChild(points);
+                root.appendChild(usuario);
             }
-
-            usuario = getUsuarioElement(userName);
-            Element points = createPointsNode(pointType, pointValue);
-            usuario.appendChild(points);
-            root.appendChild(usuario);
-
             writeXML(this.document);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void setPointsNode(Element usuario, String pointValue) {
+        usuario.getElementsByTagName("Valor").item(0).setTextContent(pointValue);
     }
 
     private Element getUsuarioElement(String userName) {
@@ -142,11 +142,17 @@ public class Armazenamento {
         }
     }
 
-    private Element getRootElement() {
-        return (Element) this.document.getElementsByTagName("Usuarios").item(0);
+    private Element getRootElement() throws ParserConfigurationException {
+
+        if (isXMLFileInicialized()) {
+            return (Element) this.document.getElementsByTagName("Usuarios").item(0);
+        } else {
+            createNewDocument();
+            return createRootElement();
+        }
     }
 
-    private void setNewDocument() throws ParserConfigurationException {
+    private void createNewDocument() throws ParserConfigurationException {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document newDocument = builder.newDocument();
         this.document = newDocument;
@@ -171,6 +177,7 @@ public class Armazenamento {
         tipo.appendChild(this.document.createTextNode(pointType));
         Element valor = this.document.createElement("Valor");
         valor.appendChild(this.document.createTextNode(pointValue));
+//        valor.getChildNodes().item(0).setTextContent("Testando aquiiii");
 
         Element pontos = this.document.createElement("Pontos");
         pontos.appendChild(tipo);
