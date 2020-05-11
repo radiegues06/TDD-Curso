@@ -171,9 +171,12 @@ public class Armazenamento {
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource domSource = new DOMSource(document);
 
-        String fileName = java.time.LocalDateTime.now().toString().replace(":","_");
-        fileName = fileName.substring(0, fileName.indexOf("."));
-        this.filePath = CURR_DIR + "\\games\\" + fileName + ".xml";
+        if (filePath.isEmpty()) {
+            String fileName = java.time.LocalDateTime.now().toString().
+                    replace(":","_").replace(".","_");
+            this.filePath = CURR_DIR + "\\games\\" + fileName + ".xml";
+        }
+
         StreamResult streamResult = new StreamResult(new File(this.filePath));
 
         transformer.transform(domSource, streamResult);
