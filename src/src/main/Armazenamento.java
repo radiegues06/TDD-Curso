@@ -95,4 +95,8 @@ public class Armazenamento {
         }
         return value;
     }
+
+    public void setUserPoints(String userName, String pointType, String pointVale) {
+
+    }
 }

@@ -120,4 +120,10 @@ public class testArmazenamento {
         }
     }
 
+    //Criando arquivos e usuários
+    @Test
+    public void whenSetaValorParaUnicoUsuarioThenRetornaValorArmazenado() {
+        armazenamento.setUserPoints("Rafael","Estrela","10");
+    }
+
 }
