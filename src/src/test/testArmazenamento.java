@@ -83,11 +83,38 @@ public class testArmazenamento {
     }
 
     @Test
-    public void whenFiltraPorTipoDePontoThenRerornaUsuariosEPontos() {
+    public void whenFiltraPorTipoDePontoThenRerornaUsuarioEPontos() {
         try {
             armazenamento.load(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
             HashMap<String,String> usuarios = armazenamento.filterByPointType("Moedas");
             assertEquals("15", usuarios.get("Rafael"));
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void whenFiltraPorTipoDePontoThenRerornaUsuariosEPontos() {
+        try {
+            armazenamento.load(CURR_DIR + "\\resources\\arquivoComUsuariosEListaDeTipoDePontos.xml");
+            HashMap<String,String> usuarios = armazenamento.filterByPointType("Moedas");
+            assertEquals("15", usuarios.get("Rafael"));
+            assertEquals("32", usuarios.get("Isabela"));
+            assertEquals("12", usuarios.get("Júlia"));
+            assertEquals(null, usuarios.get("Abner"));
+            assertEquals("120", usuarios.get("Raphael"));
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void whenFiltraPorUsuarioETipoDePontoThenRetornaPontos() {
+        try {
+            armazenamento.load(CURR_DIR + "\\resources\\arquivoComUsuariosEListaDeTipoDePontos.xml");
+            assertEquals("12", armazenamento.filterByUserAndPointType("Júlia", "Estrelas"));
+            assertEquals("", armazenamento.filterByUserAndPointType("Isabela", "Curtidas"));
+            assertEquals("120", armazenamento.filterByUserAndPointType("Raphael", "Moedas"));
         } catch (ParserConfigurationException | IOException | SAXException e) {
             fail();
         }
