@@ -22,19 +22,19 @@ public class testArmazenamento {
 
     @Test(expected = IOException.class)
     public void whenArquivoInexistenteThenIOException() throws IOException, SAXException, ParserConfigurationException {
-        armazenamento.load("invalidPath");
+        armazenamento.loadGameXMLFile("invalidPath");
         fail();
     }
 
     @Test(expected = SAXException.class)
     public void whenArquivoComFormatoIncorretoThenSAXEception() throws IOException, SAXException, ParserConfigurationException {
-        armazenamento.load(CURR_DIR + "\\resources\\formatoIncorreto.xml");
+        armazenamento.loadGameXMLFile(CURR_DIR + "\\resources\\formatoIncorreto.xml");
     }
 
     @Test
     public void whenArquivoValidoThenSemErros() {
         try {
-            armazenamento.load(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
+            armazenamento.loadGameXMLFile(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
         } catch (ParserConfigurationException | IOException | SAXException e) {
             fail();
         }
@@ -43,7 +43,7 @@ public class testArmazenamento {
     @Test
     public void whenFiltraPorNomeDoUsuarioInexistenteThenRetornaVazio() {
         try {
-            armazenamento.load(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
+            armazenamento.loadGameXMLFile(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
             HashMap<String,String> pontos = armazenamento.filterByUser("invalido");
             assertEquals(null, pontos.get("Moedas"));
             assertEquals(null, pontos.get("Curtidas"));
@@ -55,7 +55,7 @@ public class testArmazenamento {
     @Test
     public void whenFiltraPorNomeDoUsuarioThenRetornaPontosDoUsuario() {
         try {
-            armazenamento.load(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
+            armazenamento.loadGameXMLFile(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
             HashMap<String,String> pontos = armazenamento.filterByUser("Rafael");
             assertEquals("15", pontos.get("Moedas"));
             assertEquals("110", pontos.get("Curtidas"));
@@ -67,7 +67,7 @@ public class testArmazenamento {
     @Test
     public void whenFiltraPorNomeDoUsuarioComMaisDeUmUsuarioThenRetornaPontosDoUsuario() {
         try {
-            armazenamento.load(CURR_DIR + "\\resources\\arquivoComDoisUsuarios.xml");
+            armazenamento.loadGameXMLFile(CURR_DIR + "\\resources\\arquivoComDoisUsuarios.xml");
             HashMap<String,String> pontos1 = armazenamento.filterByUser("Rafael");
             assertEquals("15", pontos1.get("Moedas"));
             assertEquals("110", pontos1.get("Curtidas"));
@@ -85,7 +85,7 @@ public class testArmazenamento {
     @Test
     public void whenFiltraPorTipoDePontoThenRerornaUsuarioEPontos() {
         try {
-            armazenamento.load(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
+            armazenamento.loadGameXMLFile(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml");
             HashMap<String,String> usuarios = armazenamento.filterByPointType("Moedas");
             assertEquals("15", usuarios.get("Rafael"));
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -96,7 +96,7 @@ public class testArmazenamento {
     @Test
     public void whenFiltraPorTipoDePontoThenRerornaUsuariosEPontos() {
         try {
-            armazenamento.load(CURR_DIR + "\\resources\\arquivoComUsuariosEListaDeTipoDePontos.xml");
+            armazenamento.loadGameXMLFile(CURR_DIR + "\\resources\\arquivoComUsuariosEListaDeTipoDePontos.xml");
             HashMap<String,String> usuarios = armazenamento.filterByPointType("Moedas");
             assertEquals("15", usuarios.get("Rafael"));
             assertEquals("32", usuarios.get("Isabela"));
@@ -111,7 +111,7 @@ public class testArmazenamento {
     @Test
     public void whenFiltraPorUsuarioETipoDePontoThenRetornaPontos() {
         try {
-            armazenamento.load(CURR_DIR + "\\resources\\arquivoComUsuariosEListaDeTipoDePontos.xml");
+            armazenamento.loadGameXMLFile(CURR_DIR + "\\resources\\arquivoComUsuariosEListaDeTipoDePontos.xml");
             assertEquals("12", armazenamento.filterByUserAndPointType("Júlia", "Estrelas"));
             assertEquals("", armazenamento.filterByUserAndPointType("Isabela", "Curtidas"));
             assertEquals("120", armazenamento.filterByUserAndPointType("Raphael", "Moedas"));
