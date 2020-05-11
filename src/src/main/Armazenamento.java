@@ -104,16 +104,23 @@ public class Armazenamento {
 
     public void setUserPoints(String userName, String pointType, String pointValue) {
         try {
+            Element root;
+            Element usuario;
+
             if (isXMLFileInicialized()) {
+
+                root = getRootElement();
+                usuario = createUsuarioElement(userName);
 
             } else {
                 setNewDocument();
-                Element root = createRootElement();
-                Element usuario = createUsuarioElement(userName);
-                Element points = createPointsNode(pointType, pointValue);
-                usuario.appendChild(points);
-                root.appendChild(usuario);
+                root = createRootElement();
+                usuario = createUsuarioElement(userName);
             }
+
+            Element points = createPointsNode(pointType, pointValue);
+            usuario.appendChild(points);
+            root.appendChild(usuario);
 
             writeXML(this.document);
 
@@ -121,6 +128,10 @@ public class Armazenamento {
             e.printStackTrace();
         }
 
+    }
+
+    private Element getRootElement() {
+        return (Element) this.document.getElementsByTagName("Usuarios").item(0);
     }
 
     private void setNewDocument() throws ParserConfigurationException {

@@ -135,4 +135,13 @@ public class testArmazenamento {
         deleteFile(armazenamento.getFilePath());
     }
 
+    @Test
+    public void whenCarregaXMLESetaValorParaNovoUsuarioThenEscrevePontosNoXML() {
+        armazenamento.setUserPoints("Rafael", "Estrela", "20");
+        armazenamento.setUserPoints("Júlia", "Fichas", "5000");
+        assertEquals("20", armazenamento.filterByUserAndPointType("Rafael", "Estrela"));
+        assertEquals("5000", armazenamento.filterByUserAndPointType("Júlia", "Fichas"));
+
+    }
+
 }
