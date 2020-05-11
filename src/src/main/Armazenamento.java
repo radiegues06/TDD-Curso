@@ -7,6 +7,11 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 import java.io.File;
 import java.io.IOException;
@@ -14,14 +19,15 @@ import java.util.HashMap;
 
 public class Armazenamento {
 
-    Document document;
-
-    XPath xpath = XPathFactory.newInstance().newXPath();
+    private final String CURR_DIR = System.getProperty("user.dir");
+    private String filePath = new String();
+    private Document document;
+    private XPath xpath = XPathFactory.newInstance().newXPath();
 
     public void loadGameXMLFile(String filePath) throws ParserConfigurationException, IOException, SAXException {
-
+        this.filePath = filePath;
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        document = builder.parse(new File(filePath));
+        document = builder.parse(new File(this.filePath));
 
         //Normalize the XML Structure; It's just too important !!
         document.getDocumentElement().normalize();
@@ -96,7 +102,77 @@ public class Armazenamento {
         return value;
     }
 
-    public void setUserPoints(String userName, String pointType, String pointVale) {
+    public void setUserPoints(String userName, String pointType, String pointValue) {
+        try {
+            if (isXMLFileInicialized()) {
 
+            } else {
+                setNewDocument();
+                Element root = createRootElement();
+                Element usuario = createUsuarioElement(userName);
+                Element points = createPointsNode(pointType, pointValue);
+                usuario.appendChild(points);
+                root.appendChild(usuario);
+            }
+
+            writeXML(this.document);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void setNewDocument() throws ParserConfigurationException {
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document newDocument = builder.newDocument();
+        this.document = newDocument;
+    }
+
+    private Element createRootElement() {
+        Element root = document.createElement("Usuarios");
+        document.appendChild(root);
+        return root;
+    }
+
+    private Element createUsuarioElement(String userName) {
+        Element usuario = document.createElement("Usuario");
+        Element nome = document.createElement("Nome");
+        nome.appendChild(document.createTextNode(userName));
+        usuario.appendChild(nome);
+        return usuario;
+    }
+
+    private Element createPointsNode(String pointType, String pointValue) {
+        Element tipo = this.document.createElement("Tipo");
+        tipo.appendChild(this.document.createTextNode(pointType));
+        Element valor = this.document.createElement("Valor");
+        valor.appendChild(this.document.createTextNode(pointValue));
+
+        Element pontos = this.document.createElement("Pontos");
+        pontos.appendChild(tipo);
+        pontos.appendChild(valor);
+        return pontos;
+    }
+
+    private void writeXML(Document document) throws TransformerException {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource domSource = new DOMSource(document);
+
+        String fileName = java.time.LocalDateTime.now().toString().replace(":","_");
+        fileName = fileName.substring(0, fileName.indexOf("."));
+        this.filePath = CURR_DIR + "\\games\\" + fileName + ".xml";
+        StreamResult streamResult = new StreamResult(new File(this.filePath));
+
+        transformer.transform(domSource, streamResult);
+    }
+
+    private boolean isXMLFileInicialized() {
+        return document != null;
+    }
+
+    public String getFilePath() {
+        return this.filePath;
     }
 }

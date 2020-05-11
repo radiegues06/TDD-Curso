@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -14,6 +15,11 @@ public class testArmazenamento {
 
     String CURR_DIR = System.getProperty("user.dir");
     Armazenamento armazenamento;
+
+    private static void deleteFile(String filePath) {
+        File file = new File(filePath);
+        file.delete();
+    }
 
     @Before
     public void iniciaArmazenamento() {
@@ -120,10 +126,13 @@ public class testArmazenamento {
         }
     }
 
-    //Criando arquivos e usuários
     @Test
-    public void whenSetaValorParaUnicoUsuarioThenRetornaValorArmazenado() {
+    public void whenNaoCarregaXMLESetaValorParaUnicoUsuarioThenCriaXMLERetornaValorArmazenado() {
         armazenamento.setUserPoints("Rafael","Estrela","10");
+        assertEquals("10", armazenamento.filterByUserAndPointType("Rafael", "Estrela"));
+        assertEquals("10", armazenamento.filterByUser("Rafael").get("Estrela"));
+        assertEquals("10", armazenamento.filterByPointType("Estrela").get("Rafael"));
+        deleteFile(armazenamento.getFilePath());
     }
 
 }
