@@ -5,9 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -19,6 +20,28 @@ public class testArmazenamento {
     private static void deleteFile(String filePath) {
         File file = new File(filePath);
         file.delete();
+    }
+
+    private static int getWordCount(String filePath, String word) {
+        File file = new File(filePath);
+        int wordCount = 0;
+        Pattern p = Pattern.compile(word);
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Matcher m = p.matcher(line);
+                while (m.find())
+                    wordCount++;
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return wordCount;
     }
 
     @Before
@@ -145,17 +168,16 @@ public class testArmazenamento {
     }
 
     @Test
-    public void whenNaoCarregaXMLESetaValorParaUsuarioJaExistenteThenEscrevePontosNoXML() {
-        armazenamento.setUserPoints("Rafael", "Estrela", "20");
+    public void whenNaoCarregaXMLESetaValorParaUsuarioJaExistenteThenEscrevePontosNoXMLNaMesmaTagDeXML() {
         armazenamento.setUserPoints("Júlia", "Fichas", "5000");
         armazenamento.setUserPoints("Júlia", "Moedas", "150");
-        armazenamento.setUserPoints("Rafael", "Moedas", "50");
+        armazenamento.setUserPoints("Júlia", "Curtidas", "30");
+        armazenamento.setUserPoints("Júlia", "Estrelas", "10");
 
-        assertEquals("20", armazenamento.filterByUserAndPointType("Rafael", "Estrela"));
-        assertEquals("5000", armazenamento.filterByUserAndPointType("Júlia", "Fichas"));
-        assertEquals("150", armazenamento.filterByUserAndPointType("Júlia", "Moedas"));
-        assertEquals("50", armazenamento.filterByUserAndPointType("Rafael", "Moedas"));
-        deleteFile(armazenamento.getFilePath());
+        assertEquals("5000", armazenamento.filterByUser("Júlia").get("Fichas"));
+        assertEquals("150", armazenamento.filterByUser("Júlia").get("Moedas"));
+
+        assertEquals(1, getWordCount(armazenamento.getFilePath(), "Júlia"));
+//        deleteFile(armazenamento.getFilePath());
     }
-
 }

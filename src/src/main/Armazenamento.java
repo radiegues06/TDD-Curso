@@ -108,16 +108,13 @@ public class Armazenamento {
             Element usuario;
 
             if (isXMLFileInicialized()) {
-
                 root = getRootElement();
-                usuario = createUsuarioElement(userName);
-
             } else {
                 setNewDocument();
                 root = createRootElement();
-                usuario = createUsuarioElement(userName);
             }
 
+            usuario = getUsuarioElement(userName);
             Element points = createPointsNode(pointType, pointValue);
             usuario.appendChild(points);
             root.appendChild(usuario);
@@ -128,6 +125,21 @@ public class Armazenamento {
             e.printStackTrace();
         }
 
+    }
+
+    private Element getUsuarioElement(String userName) {
+        try {
+            XPathExpression searchXPath = xpath.compile("/Usuarios/Usuario[contains(Nome,'" + userName + "')]");
+
+            NodeList nodes = (NodeList) searchXPath.evaluate(document, XPathConstants.NODESET);
+            Element element = (Element) nodes.item(0);
+            if (element == null)
+                throw new Exception();
+            return element;
+
+        } catch (Exception e) {
+            return createUsuarioElement(userName);
+        }
     }
 
     private Element getRootElement() {
