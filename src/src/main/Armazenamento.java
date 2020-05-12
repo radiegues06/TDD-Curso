@@ -108,7 +108,7 @@ public class Armazenamento {
             Element usuario = getUsuarioElement(userName);
 
             if (existUsersPointType(userName, pointType)) {
-                setPointsNode(usuario, pointValue);
+                setPointsNode(usuario, pointType, pointValue);
             } else {
                 Element points = createPointsNode(pointType, pointValue);
                 usuario.appendChild(points);
@@ -126,8 +126,16 @@ public class Armazenamento {
         return filterByUserAndPointType(userName, pointType).length() > 0;
     }
 
-    private void setPointsNode(Element usuario, String pointValue) {
-        usuario.getElementsByTagName("Valor").item(0).setTextContent(pointValue);
+    private void setPointsNode(Element usuario, String pointType, String pointValue) {
+        NodeList nodeList = usuario.getElementsByTagName("Tipo");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Element pointNode = (Element) nodeList.item(i);
+            if (pointNode.getTextContent().equals(pointType)) {
+                usuario.getElementsByTagName("Valor").item(i).setTextContent(pointValue);
+            }
+        }
+
+                //.item(0).setTextContent(pointValue);
     }
 
     private Element getUsuarioElement(String userName) {
