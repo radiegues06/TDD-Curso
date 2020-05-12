@@ -25,7 +25,7 @@ public class testArmazenamento {
 
     private static String copyFile(String filePath) {
         File source = new File(filePath);
-        File destination = new File(createCopyFileName(source));
+        File destination = new File(createFileCopy(source));
         try {
             Files.copy(source.toPath(), destination.toPath());
         } catch (IOException e) {
@@ -34,7 +34,7 @@ public class testArmazenamento {
         return destination.toPath().toString();
     }
 
-    private static String createCopyFileName(File source) {
+    private static String createFileCopy(File source) {
         String fileName = source.toPath().toString();
         return fileName.substring(0,fileName.indexOf(".xml")) + " - copy" + fileName.substring(fileName.indexOf(".xml"));
     }
@@ -223,7 +223,36 @@ public class testArmazenamento {
     }
 
     @Test
-    public void whenCarregaXMLECriaNovoUsuarioThenEscreveNovoUsuarioNoXML() {
-        copyFile(CURR_DIR + "\\resources\\arquivoComUsuariosEListaDeTipoDePontos.xml");
+    public void whenCarregaXMLECriaNovoUsuarioThenEscreveNovoUsuarioNoXML() throws IOException, SAXException, ParserConfigurationException {
+        armazenamento.loadGameXMLFile(copyFile(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml"));
+        armazenamento.setUserPoints("Júlia","Estrelas", "100");
+
+        assertEquals("100", armazenamento.filterByUserAndPointType("Júlia", "Estrelas"));
+
+        deleteFile(armazenamento.getFilePath());
+    }
+
+    @Test
+    public void whenCarregaXMLECriaNovoPontoThenEscreveNovoPontoNoXML() throws IOException, SAXException, ParserConfigurationException {
+        armazenamento.loadGameXMLFile(copyFile(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml"));
+        armazenamento.setUserPoints("Rafael","Fichas", "1000");
+
+        assertEquals("1000", armazenamento.filterByUserAndPointType("Rafael", "Fichas"));
+        assertEquals(1, getWordCount(armazenamento.getFilePath(), "Rafael"));
+
+        deleteFile(armazenamento.getFilePath());
+    }
+
+    @Test
+    public void whenCarregaXMLEAtualizaPontoThenEscreveNovoPontoNoXML() throws IOException, SAXException, ParserConfigurationException {
+        armazenamento.loadGameXMLFile(copyFile(CURR_DIR + "\\resources\\arquivoComUmUsuario.xml"));
+        armazenamento.setUserPoints("Rafael","Moedas", "9");
+        armazenamento.setUserPoints("Rafael","Curtidas", "1000");
+
+        assertEquals("9", armazenamento.filterByUserAndPointType("Rafael", "Moedas"));
+        assertEquals("1000", armazenamento.filterByUserAndPointType("Rafael", "Curtidas"));
+        assertEquals(1, getWordCount(armazenamento.getFilePath(), "Rafael"));
+
+        deleteFile(armazenamento.getFilePath());
     }
 }
