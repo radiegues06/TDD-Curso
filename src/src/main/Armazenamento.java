@@ -17,13 +17,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class Armazenamento {
+public class Armazenamento implements ArmazenamentoInterface {
 
     private final String CURR_DIR = System.getProperty("user.dir");
     private String filePath = new String();
     private Document document;
     private XPath xpath = XPathFactory.newInstance().newXPath();
 
+    @Override
     public void loadGameXMLFile(String filePath) throws ParserConfigurationException, IOException, SAXException {
         this.filePath = filePath;
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -32,6 +33,7 @@ public class Armazenamento {
         document.getDocumentElement().normalize();
     }
 
+    @Override
     public HashMap<String,String> filterByUser(String userName) {
         try {
             XPathExpression searchXPath = xpath.compile("/Usuarios/Usuario[contains(Nome,'" + userName + "')]/Pontos");
@@ -60,6 +62,7 @@ public class Armazenamento {
         return element.getElementsByTagName(tagName).item(0).getTextContent();
     }
 
+    @Override
     public HashMap<String, String> filterByPointType(String pointType) {
         try {
             XPathExpression searchXPath = xpath.compile("/Usuarios/Usuario/Pontos[contains(Tipo,'" + pointType + "')]");
@@ -85,6 +88,7 @@ public class Armazenamento {
         return users;
     }
 
+    @Override
     public String filterByUserAndPointType(String userName, String pointType) {
         try {
             XPathExpression searchXPath = xpath.compile("/Usuarios/Usuario[contains(Nome,'" + userName +
@@ -102,6 +106,7 @@ public class Armazenamento {
         }
     }
 
+    @Override
     public void setUserPoints(String userName, String pointType, String pointValue) {
         try {
             Element root = getRootElement();
@@ -188,7 +193,6 @@ public class Armazenamento {
         tipo.appendChild(this.document.createTextNode(pointType));
         Element valor = this.document.createElement("Valor");
         valor.appendChild(this.document.createTextNode(pointValue));
-//        valor.getChildNodes().item(0).setTextContent("Testando aquiiii");
 
         Element pontos = this.document.createElement("Pontos");
         pontos.appendChild(tipo);
@@ -216,6 +220,7 @@ public class Armazenamento {
         return document != null;
     }
 
+    @Override
     public String getFilePath() {
         return this.filePath;
     }
