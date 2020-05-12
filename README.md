@@ -32,15 +32,34 @@ Valores nulos não devem ser apresentados.
 Exemplo de arquivo:
 
 ```<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Usuario>
-	<Nome>Rafael</Nome>
-	<Estrela>10</Estrela>
-	<Moeda>14</Moeda>
-</Usuario>
-<Usuario>
-	<Nome>Eduardo</Nome>
-	<Ficha>5000</Ficha>
-</Usuario>
+   <Usuarios>
+   	<Usuario>
+   		<Nome>Rafael</Nome>
+   		<Pontos>
+   			<Tipo>Moedas</Tipo>
+   			<Valor>15</Valor>
+   		</Pontos>
+        <Pontos>
+       			<Tipo>Fichas</Tipo>
+       			<Valor>1000</Valor>
+       		</Pontos>
+   		<Pontos>
+   			<Tipo>Curtidas</Tipo>
+   			<Valor>110</Valor>
+   		</Pontos>
+   	</Usuario>
+    <Usuario>
+       		<Nome>Eduardo</Nome>
+       		<Pontos>
+       			<Tipo>Fichas</Tipo>
+       			<Valor>3000</Valor>
+       		</Pontos>
+       		<Pontos>
+       			<Tipo>Comentários</Tipo>
+       			<Valor>11</Valor>
+       		</Pontos>
+       	</Usuario>
+   </Usuarios>
 ```
 
 ## Hipóteses
