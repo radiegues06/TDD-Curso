@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,12 +15,28 @@ import static org.junit.Assert.*;
 
 public class testArmazenamento {
 
-    String CURR_DIR = System.getProperty("user.dir");
+    static String CURR_DIR = System.getProperty("user.dir");
     Armazenamento armazenamento;
 
     private static void deleteFile(String filePath) {
         File file = new File(filePath);
         file.delete();
+    }
+
+    private static String copyFile(String filePath) {
+        File source = new File(filePath);
+        File destination = new File(createCopyFileName(source));
+        try {
+            Files.copy(source.toPath(), destination.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return destination.toPath().toString();
+    }
+
+    private static String createCopyFileName(File source) {
+        String fileName = source.toPath().toString();
+        return fileName.substring(0,fileName.indexOf(".xml")) + " - copy" + fileName.substring(fileName.indexOf(".xml"));
     }
 
     private static int getWordCount(String filePath, String word) {
@@ -203,5 +220,10 @@ public class testArmazenamento {
         assertEquals(1, getWordCount(armazenamento.getFilePath(), "Fichas"));
 
         deleteFile(armazenamento.getFilePath());
+    }
+
+    @Test
+    public void whenCarregaXMLECriaNovoUsuarioThenEscreveNovoUsuarioNoXML() {
+        copyFile(CURR_DIR + "\\resources\\arquivoComUsuariosEListaDeTipoDePontos.xml");
     }
 }
