@@ -29,32 +29,31 @@ public class Armazenamento {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         document = builder.parse(new File(this.filePath));
 
-        //Normalize the XML Structure; It's just too important !!
         document.getDocumentElement().normalize();
-
     }
 
     public HashMap<String,String> filterByUser(String userName) {
-        HashMap<String,String> userPoints = new HashMap<>();
         try {
             XPathExpression searchXPath = xpath.compile("/Usuarios/Usuario[contains(Nome,'" + userName + "')]/Pontos");
 
-            NodeList nodes = (NodeList) searchXPath.evaluate(document, XPathConstants.NODESET);
+            NodeList nodeList = (NodeList) searchXPath.evaluate(document, XPathConstants.NODESET);
 
-            parsePointTypesForUser(userPoints, nodes);
+            return createPointTypesMap(nodeList);
 
         } catch (XPathExpressionException e) {
             e.printStackTrace();
+            return null;
         }
-        return userPoints;
     }
 
-    private void parsePointTypesForUser(HashMap<String, String> pointTypes, NodeList nodes) {
+    private HashMap<String,String> createPointTypesMap(NodeList nodes) {
+        HashMap<String,String> pointTypes = new HashMap<>();
         for (int i = 0; i < nodes.getLength(); i++) {
             Element pointTypeElement = (Element) nodes.item(i);
             pointTypes.put(getElementTagContent(pointTypeElement, "Tipo"),
                     getElementTagContent(pointTypeElement, "Valor"));
         }
+        return pointTypes;
     }
 
     private String getElementTagContent(Element element, String tagName) {
@@ -62,31 +61,31 @@ public class Armazenamento {
     }
 
     public HashMap<String, String> filterByPointType(String pointType) {
-        HashMap<String,String> users = new HashMap<>();
         try {
             XPathExpression searchXPath = xpath.compile("/Usuarios/Usuario/Pontos[contains(Tipo,'" + pointType + "')]");
 
             NodeList nodes = (NodeList) searchXPath.evaluate(document, XPathConstants.NODESET);
 
-            setUsuariosForPointType(users, nodes);
+            return createUsuariosPointTypeMap(nodes);
 
         } catch (XPathExpressionException e) {
             e.printStackTrace();
+            return null;
         }
-        return users;
     }
 
-    private void setUsuariosForPointType(HashMap<String, String> users, NodeList nodes) {
+    private HashMap<String, String> createUsuariosPointTypeMap(NodeList nodes) {
+        HashMap<String, String> users = new HashMap<>();
         for (int i = 0; i < nodes.getLength(); i++) {
             Element element = (Element) nodes.item(i);
             Element nameElement = (Element) element.getParentNode();
             users.put(getElementTagContent(nameElement, "Nome"),
                     getElementTagContent(element, "Valor"));
         }
+        return users;
     }
 
     public String filterByUserAndPointType(String userName, String pointType) {
-        String value = new String();
         try {
             XPathExpression searchXPath = xpath.compile("/Usuarios/Usuario[contains(Nome,'" + userName +
                     "')]/Pontos[contains(Tipo,'" + pointType + "')]");
@@ -94,21 +93,21 @@ public class Armazenamento {
             NodeList nodes = (NodeList) searchXPath.evaluate(document, XPathConstants.NODESET);
             if (nodes.getLength() > 0) {
                 Element element = (Element) nodes.item(0);
-                value = getElementTagContent(element, "Valor");
+                return getElementTagContent(element, "Valor");
+            } else {
+                return "";
             }
         } catch (XPathExpressionException e) {
-            e.printStackTrace();
+            return "";
         }
-        return value;
     }
 
     public void setUserPoints(String userName, String pointType, String pointValue) {
         try {
-
             Element root = getRootElement();
             Element usuario = getUsuarioElement(userName);
 
-            if (filterByUserAndPointType(userName, pointType).length() > 0) {
+            if (existUsersPointType(userName, pointType)) {
                 setPointsNode(usuario, pointValue);
             } else {
                 Element points = createPointsNode(pointType, pointValue);
@@ -123,6 +122,10 @@ public class Armazenamento {
 
     }
 
+    private boolean existUsersPointType(String userName, String pointType) {
+        return filterByUserAndPointType(userName, pointType).length() > 0;
+    }
+
     private void setPointsNode(Element usuario, String pointValue) {
         usuario.getElementsByTagName("Valor").item(0).setTextContent(pointValue);
     }
@@ -134,11 +137,11 @@ public class Armazenamento {
             NodeList nodes = (NodeList) searchXPath.evaluate(document, XPathConstants.NODESET);
             Element element = (Element) nodes.item(0);
             if (element == null)
-                throw new Exception();
+                return createUsuarioElement(userName);
             return element;
 
         } catch (Exception e) {
-            return createUsuarioElement(userName);
+            return null;
         }
     }
 
