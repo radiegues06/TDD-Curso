@@ -1,7 +1,7 @@
 package main;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 public class MockArmazenamento implements ArmazenamentoInterface {
 
@@ -14,12 +14,20 @@ public class MockArmazenamento implements ArmazenamentoInterface {
 
     @Override
     public HashMap<String, String> filterByPointType(String pointType) {
-        return null;
+        HashMap<String,String> pointTypeMap = new HashMap<>();
+        for (Map.Entry<String, HashMap<String,String>> entry : users.entrySet()) {
+            String userName = entry.getKey();
+            HashMap<String,String> userPoints = entry.getValue();
+
+            if (userPoints.containsKey(pointType));
+                pointTypeMap.put(userName, userPoints.get(pointType));
+        }
+        return pointTypeMap;
     }
 
     @Override
     public String filterByUserAndPointType(String userName, String pointType) {
-        return null;
+        return users.get(userName).get(pointType);
     }
 
     @Override
