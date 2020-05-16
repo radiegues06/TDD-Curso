@@ -24,7 +24,6 @@ public class Armazenamento implements ArmazenamentoInterface {
     private Document document;
     private XPath xpath = XPathFactory.newInstance().newXPath();
 
-    @Override
     public void loadGameXMLFile(String filePath) throws ParserConfigurationException, IOException, SAXException {
         this.filePath = filePath;
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -220,7 +219,6 @@ public class Armazenamento implements ArmazenamentoInterface {
         return document != null;
     }
 
-    @Override
     public String getFilePath() {
         return this.filePath;
     }

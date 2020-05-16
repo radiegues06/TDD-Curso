@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public interface ArmazenamentoInterface {
-    void loadGameXMLFile(String filePath) throws ParserConfigurationException, IOException, SAXException;
 
     HashMap<String,String> filterByUser(String userName);
 
@@ -17,5 +16,4 @@ public interface ArmazenamentoInterface {
 
     void setUserPoints(String userName, String pointType, String pointValue);
 
-    String getFilePath();
 }
