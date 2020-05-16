@@ -69,7 +69,7 @@ public class testePlacar {
         placar.registraPontos("Abner", "Estrelas", "19");
         placar.registraPontos("Raphael", "Estrelas", "32");
 
-        LinkedList<String> usersList =  placar.getPointsRanking("Estrelas");
+        LinkedList<String> usersList =  placar.getPointRanking("Estrelas");
 
         assertEquals("Júlia", usersList.get(0));
         assertEquals("Raphael", usersList.get(1));

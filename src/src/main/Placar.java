@@ -23,26 +23,26 @@ public class Placar {
     }
 
     private HashMap<String,String> getValidHashMapValues(HashMap<String,String> inMap) {
-        HashMap<String,String> outMap = new HashMap<>();
+        HashMap<String,String> validMap = new HashMap<>();
         for (Map.Entry<String, String> entry : inMap.entrySet()) {
-
            if (isValidEntry(entry)) {
-               outMap.put(entry.getKey(), entry.getValue());
+               validMap.put(entry.getKey(), entry.getValue());
            }
         }
 
-        return outMap;
+        return validMap;
     }
 
     private boolean isValidEntry(Map.Entry<String, String> entry) {
         return !entry.getValue().equals("0");
     }
 
-    public LinkedList<String> getPointsRanking(String pointType) {
+    public LinkedList<String> getPointRanking(String pointType) {
         LinkedList<String> users = new LinkedList<>();
         List<Integer> values = new ArrayList<>();
 
-        for (Map.Entry<String, String> entry : armazenamento.filterByPointType(pointType).entrySet()) {
+        for (Map.Entry<String, String> entry :
+                armazenamento.filterByPointType(pointType).entrySet()) {
 
             values.add(Integer.parseInt(entry.getValue()));
         }
@@ -56,7 +56,6 @@ public class Placar {
                 }
             }
         }
-
         return users;
     }
 }
