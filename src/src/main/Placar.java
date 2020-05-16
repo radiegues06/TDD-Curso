@@ -1,7 +1,6 @@
 package main;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Placar {
 
@@ -39,4 +38,25 @@ public class Placar {
         return !entry.getValue().equals("0");
     }
 
+    public LinkedList<String> getPointsRanking(String pointType) {
+        LinkedList<String> users = new LinkedList<>();
+        List<Integer> values = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : armazenamento.filterByPointType(pointType).entrySet()) {
+
+            values.add(Integer.parseInt(entry.getValue()));
+        }
+
+        Collections.sort(values, Collections.reverseOrder());
+
+        for (Integer value : values) {
+            for (Map.Entry<String, String> entry : armazenamento.filterByPointType(pointType).entrySet()) {
+                if (value.toString().equals(entry.getValue())) {
+                    users.add(entry.getKey());
+                }
+            }
+        }
+
+        return users;
+    }
 }

@@ -5,6 +5,8 @@ import main.Placar;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedList;
+
 import static org.junit.Assert.assertEquals;
 
 public class testePlacar {
@@ -57,6 +59,21 @@ public class testePlacar {
 
         assertEquals("15", placar.getUserPoints("Rafael").get("Estrelas"));
         assertEquals(null, placar.getUserPoints("Rafael").get("Curtidas"));
+    }
+
+    @Test
+    public void whenGetRankingThenRetornaListaOrdenada() {
+        placar.registraPontos("Rafael", "Estrelas", "17");
+        placar.registraPontos("Júlia", "Estrelas", "55");
+        placar.registraPontos("Isabela", "Estrelas", "25");
+        placar.registraPontos("Abner", "Estrelas", "19");
+        placar.registraPontos("Raphael", "Estrelas", "32");
+
+        LinkedList<String> usersList =  placar.getPointsRanking("Estrelas");
+
+        assertEquals("Júlia", usersList.get(0));
+        assertEquals("Raphael", usersList.get(1));
+        assertEquals("Isabela", usersList.get(2));
     }
 
 }
